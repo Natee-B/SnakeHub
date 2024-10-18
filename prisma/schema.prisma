@@ -14,14 +14,14 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
   password  String
-  email     String     @unique
-  role      Role       @default(USER)
-  createdAt DateTime   @default(now())
-  Category  Category[]
+  email     String   @unique
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
   Post      Post[]
+  Order     Order[]
 }
 
 enum Role {
@@ -32,35 +32,76 @@ enum Role {
 model Category {
   id          Int      @id @default(autoincrement())
   speciesName String   @unique
-  description String
-  img         String
+  description String?
+  img         String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
+  updatedAt   DateTime @default(now()) @updatedAt
   Snake       Snake[]
+  morph       Morph[]
 }
 
 model Snake {
-  id          Int      @id @default(autoincrement())
-  name        String
-  morph       String
-  description String
-  img         String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt @default(now())
-  isActive    Boolean  @default(true)
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id          Int       @id @default(autoincrement())
+  description String?
+  price       Int?
+  birthdate   DateTime?
+  age         Int?
+  gender      Gender @default(UNKNOWN) 
+  feedingType FeedingType @default(FROZEN) 
+  img         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  isActive    Boolean   @default(true)
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  morph       Morph     @relation(fields: [morphId], references: [id])
+  order       Order?    @relation(fields: [orderId], references: [id])
   categoryId  Int
+  morphId     Int
+  orderId     Int? 
+}
+
+enum FeedingType {
+  LIVE
+  FROZEN
+  THAWED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+model Morph {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  snake      Snake[]
 }
 
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
-  content   String
-  img       String
+  content   String   @db.Text()
+  img       String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
+}
+
+model Order {
+  id             Int      @id @default(autoincrement())
+  quantity       Int      @default(1)
+  total          Int // ราคาทั้งหมด
+  status         String   @default("PENDING")
+  paymentMethod  String? // วิธีการชำระเงิน
+  shippingStatus String? // สถานะการจัดส่ง (เช่น PENDING, SHIPPED, DELIVERED)
+  trackingNumber String? // หมายเลขติดตามพัสดุ
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  Snake          Snake[]
 }

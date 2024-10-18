@@ -32,7 +32,6 @@ authController.Login = async (req, res, next) => {
     const {identify, password } = req.body;
     const {email,username} = authValidate.checkLogin( identify,password);
     let user
-    // console.log("user is :",user)
     if (email) {
       user = await authService.isEmailExist(email, "login");
     } else {

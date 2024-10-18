@@ -12,27 +12,29 @@ categoryController.category = async (req, res, next) => {
   }
 };
 
+categoryController.getAllMorph = async (req, res, next) => {
+  try {
+    const data = await categoryService.getAllMorph();
+    res.json({data});
+  } catch (err) {
+    next(err);
+  }
+};
 categoryController.getMorphsByCategory = async (req, res, next) => {
   try {
-    console.log("111111");
-    const { categoryId } = req.params;
-    const { morph } = req.query;
-    const selectCategory = await categoryService.getMorphsByCategory(
-      categoryId,
-      morph
-    );
-
-    res.json({ selectCategory });
+    const { categoryId,morphId } = req.params;
+    const selectCategory = await categoryService.getMorphsByCategory(categoryId,morphId);
+    res.json({selectCategory});
+    
   } catch (err) {
     next(err);
   }
 };
 
-categoryController.morph = async (req, res, next) => {
+categoryController.getAllSnake = async (req, res, next) => {
   try {
-    const product = await categoryService.morph();
-
-    res.json({ product });
+    const AllSnake = await categoryService.getAllSnake();
+    res.json({ AllSnake });
   } catch (err) {
     next(err);
   }
@@ -40,16 +42,15 @@ categoryController.morph = async (req, res, next) => {
 
 categoryController.addCategory = async (req, res, next) => {
   try {
-    const { speciesName, description, img, userId } = req.body;
+    const { speciesName, description, img} = req.body;
 
     const addCategory = await categoryService.addCategory({
       speciesName,
       description,
       img,
-      userId: Number(userId),
     });
 
-    res.json({ addCategory });
+    res.json({ message: "Add Category Successful!",addCategory });
   } catch (err) {
     next(err);
   }
@@ -58,10 +59,10 @@ categoryController.addCategory = async (req, res, next) => {
 categoryController. updateCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
-    const { speciesName, description, img, userId } = req.body;
+    const { speciesName, description, img} = req.body;
 
-    const updateCategory = await categoryService.updateCategory(categoryId,speciesName, description, img, userId);
-    res.json({ message: "Update Done", updateCategory });
+    const updateCategory = await categoryService.updateCategory(categoryId,speciesName, description, img);
+    res.json({ message: "Update Successful!", updateCategory });
   } catch (err) {
     next(err);
   }
@@ -71,14 +72,12 @@ categoryController. updateCategory = async (req, res, next) => {
 categoryController.deleteCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
-
     // const admin = await authService.isAdmin(userId); //เปลี่ยนจาก service ไปที่ middleware แล้ว
     // if (!admin) {
     //   return createError(400, "Only Admin can add category");
     // }
-
     const deleteCategory = await categoryService.deleteCategory(categoryId);
-    res.json({ message: "Deleted", deleteCategory });
+    res.json({ message: "Deleted Successful!", deleteCategory });
   } catch (err) {
     next(err);
   }

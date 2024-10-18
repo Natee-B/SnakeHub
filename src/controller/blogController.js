@@ -4,6 +4,7 @@ const blogController = {}
 blogController.allBlog=async(req,res,next)=>{
     try{
        const allBlog = await blogService.getAllBlog()
+    //    console.log("allBlog",allBlog)
        res.json({allBlog})
     }catch(err){
         next(err)
@@ -24,7 +25,7 @@ blogController.addBlog=async(req,res,next)=>{
     try{
         const {title ,content ,img ,userId} = req.body
         const addBlog = await blogService.addBlog(title ,content ,img ,userId) 
-        res.json(addBlog)
+        res.json({message: "Blog added successfully!~"})
     }catch(err){
         next(err)
     }

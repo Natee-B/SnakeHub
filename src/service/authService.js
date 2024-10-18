@@ -19,12 +19,12 @@ authService.isEmailExist = async (email, string) => {
   return isEmailExist
 };
 
-authService.CreateUser = async (dataUser) => {
-  return await prisma.user.create({
+authService.CreateUser = async (dataUser) => 
+  await prisma.user.create({
     data: dataUser,
     select: { id: true, email: true, role: true },
   });
-};
+
 
 authService.isUserNameExist = async (username) => {
   const user = await prisma.user.findFirst({
