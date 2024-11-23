@@ -1,28 +1,52 @@
-const prisma = require("../config/prisma")
-const orderService = {}
+const prisma = require("../config/prisma");
+const orderService = {};
 
-orderService.order = async () => {
-    return await prisma.order.findMany({
-        include: {
-            Snake: true   
-          },
-    })
-  }
-
-orderService.addOrder = async (body) => {
-    return await prisma.order.create({
-      data: {
-        userId: body.userId,
-        Snake: { // ใช้ชื่อโมเดลที่สัมพันธ์กัน
-          connect: {
-            id: body.snakeId, // เชื่อมต่อกับงูที่มี id
-          },
+orderService.order = async () => 
+  await prisma.order.findMany({
+    include: {
+      user: {
+        select: {
+          email: true,
+          username: true,
         },
-        quantity: body.quantity,
-        total: body.total,
-        paymentMethod: body.paymentMethod,
       },
-    });
-  }
+      Snake: {
+        include: {
+          category: true,
+          morph: true,
+        },
+      },
+    },
+  });
 
-module.exports = orderService
+  orderService.updateOrder = async (orderId,status,shippingStatus,trackingNumber) => 
+    await prisma.order.update({
+      where: { id: parseInt(orderId,10) }, 
+      data: { status,shippingStatus,trackingNumber }, 
+    });
+
+  orderService.deleteOrder = async (orderId) => 
+    await prisma.order.delete({
+      where: { id: parseInt(orderId,10) }, 
+    });
+  
+
+orderService.addOrder = async (body,img) => 
+  await prisma.order.create({
+    data: {
+      userId: body.userId,
+      Snake: {
+        // ใช้ชื่อโมเดลที่สัมพันธ์กัน
+        connect: {
+          id: body.snakeId, // เชื่อมต่อกับงูที่มี id
+        },
+      },
+      // quantity: body.quantity,  รอใช้ตอนมีตะกร้า
+      total: body.total,
+      paymentMethod: body.paymentMethod,
+      img
+    },
+  });
+
+
+module.exports = orderService;

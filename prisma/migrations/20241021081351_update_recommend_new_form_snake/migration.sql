@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `snake` ADD COLUMN `new` BOOLEAN NOT NULL DEFAULT true,
+    ADD COLUMN `recommend` BOOLEAN NOT NULL DEFAULT false;

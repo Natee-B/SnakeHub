@@ -24,9 +24,9 @@ blogService.updateBlog = async (blogId,title ,content ,img ,userId)=>
    })
 
 
-blogService.deleteBlog = async (id)=>
+blogService.deleteBlog = async (blogId)=>
    await prisma.post.delete({
-      where:{ id : parseInt(id,10)}
+      where:{ id : parseInt(blogId,10)}
      })
   
 

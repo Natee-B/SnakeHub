@@ -18,8 +18,12 @@ categoryService.getMorphsByCategory = async (cId,mId) =>
     where: { 
       AND:[
         {categoryId: parseInt(cId, 10)},
-        {morphId: parseInt(mId, 10)}
+        {morphId: parseInt(mId, 10)},
       ],
+    },
+    include: {
+      category: true,  
+      morph: true   
     },
   });
 
@@ -28,14 +32,19 @@ categoryService.getAllSnake = async () =>
   await prisma.snake.findMany({
     include: {
       category: true,  
-      morph: true   
+      morph: true,
+      order: true   
     },
   })
 
 
-categoryService.addCategory = async (data) => 
+categoryService.addCategory = async (body,img) => 
   await prisma.category.create({
-    data,
+    data:{
+      speciesName: body.speciesName,
+      description: body.description,
+      img
+    }
   });
 
 

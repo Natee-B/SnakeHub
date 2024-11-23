@@ -14,14 +14,21 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  email     String   @unique
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  Post      Post[]
-  Order     Order[]
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  password    String
+  email       String   @unique
+  role        Role     @default(USER)
+  firstName   String?
+  lastName    String?
+  city        String?
+  address1    String?
+  address2    String?
+  zipCode     Int?
+  phoneNumber Int?
+  createdAt   DateTime @default(now())
+  Post        Post[]
+  Order       Order[]
 }
 
 enum Role {
@@ -41,23 +48,25 @@ model Category {
 }
 
 model Snake {
-  id          Int       @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   description String?
   price       Int?
   birthdate   DateTime?
   age         Int?
-  gender      Gender @default(UNKNOWN) 
-  feedingType FeedingType @default(FROZEN) 
+  gender      Gender      @default(UNKNOWN)
+  feedingType FeedingType @default(FROZEN)
   img         String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  isActive    Boolean   @default(true)
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  morph       Morph     @relation(fields: [morphId], references: [id])
-  order       Order?    @relation(fields: [orderId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
+  isActive    Boolean     @default(true)
+  recommend   Boolean     @default(false)
+  new         Boolean     @default(true)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  morph       Morph       @relation(fields: [morphId], references: [id])
+  order       Order?      @relation(fields: [orderId], references: [id])
   categoryId  Int
   morphId     Int
-  orderId     Int? 
+  orderId     Int?
 }
 
 enum FeedingType {
@@ -96,8 +105,9 @@ model Order {
   quantity       Int      @default(1)
   total          Int // ราคาทั้งหมด
   status         String   @default("PENDING")
+  img            String?
   paymentMethod  String? // วิธีการชำระเงิน
-  shippingStatus String? // สถานะการจัดส่ง (เช่น PENDING, SHIPPED, DELIVERED)
+  shippingStatus String   @default("PENDING") // (เช่น PENDING, SHIPPED, DELIVERED)
   trackingNumber String? // หมายเลขติดตามพัสดุ
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt

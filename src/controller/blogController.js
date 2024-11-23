@@ -24,7 +24,7 @@ blogController.Content=async(req,res,next)=>{
 blogController.addBlog=async(req,res,next)=>{
     try{
         const {title ,content ,img ,userId} = req.body
-        const addBlog = await blogService.addBlog(title ,content ,img ,userId) 
+        await blogService.addBlog(title ,content ,img ,userId) 
         res.json({message: "Blog added successfully!~"})
     }catch(err){
         next(err)
@@ -34,8 +34,8 @@ blogController.updateBlog=async(req,res,next)=>{
     try{
         const { blogId } = req.params
         const {title ,content ,img ,userId} = req.body
-        const updateBlog = await blogService.updateBlog(blogId,title ,content ,img ,userId)
-        res.json(updateBlog)
+        await blogService.updateBlog(blogId,title ,content ,img ,userId)
+        res.json({message: "Blog Update!"})
     }catch(err){
         next(err)
     }
@@ -44,8 +44,8 @@ blogController.updateBlog=async(req,res,next)=>{
 blogController.deleteBlog=async(req,res,next)=>{
     try{
         const { blogId } = req.params
-        const deleteBlog = await blogService.deleteBlog(blogId)           
-        res.json(deleteBlog)
+        await blogService.deleteBlog(blogId)           
+        res.json({message: "Blog Deleted!"})
     }catch(err){
         next(err)
     }
